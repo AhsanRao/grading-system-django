@@ -1,0 +1,30 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}
+    Assign Examiners
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <h2>Assign Faculty to Project</h2>
+        <!-- Display Messages -->
+        {% if messages %}
+            <div class="alert">
+                {% for message in messages %}
+                    <div {% if message.tags %}class="alert {{ message.tags }}"{% endif %}>{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Assign</button>
+            <a href="{% url 'coordinator-project-list' %}" class="btn btn-secondary">Back to Projects</a>
+        </form>
+    </div>
+{% endblock %}

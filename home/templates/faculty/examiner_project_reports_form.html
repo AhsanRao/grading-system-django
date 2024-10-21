@@ -1,0 +1,147 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+    Assessment Scores
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <header class="header-2">
+        <div class="page-header min-vh-65 relative"
+             style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
+            <span class="mask bg-gradient-dark opacity-6"></span>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 text-center mx-auto">
+                        <h1 class="text-white pt-3 mt-n5">Assessment Scores</h1>
+                        <p class="lead text-white mt-3">Review and confirm scores for project assessments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="position-absolute w-100 z-index-1 bottom-0">
+                <!-- SVG wave for design -->
+                <svg class="waves"
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 24 150 40"
+                     preserveAspectRatio="none"
+                     shape-rendering="auto">
+                    <defs>
+                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                    </defs>
+                    <g class="moving-waves">
+                    <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40)" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+                    <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+                    <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+                    <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95)" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </header>
+    <!-- Go Back Button -->
+    <div class="text-center mt-4">
+        <button type="button"
+                class="btn btn-secondary"
+                onclick="window.history.back();">Go Back</button>
+    </div>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Project and Group Information</div>
+                    <div class="card-body">
+                        <p>
+                            Project: <strong>{{ project_group.project.name }}</strong>
+                        </p>
+                        <p>
+                            Group: <strong>{{ project_group.name }}</strong>
+                        </p>
+                        <p>
+                            Project Coordinator: <strong>{{ project_group.project.coordinator }}</strong>
+                        </p>
+                        <p>
+                            Start Date: <strong>{{ project_group.project.start_date|date:"Y-m-d" }}</strong>
+                        </p>
+                        <p>
+                            End Date: <strong>{{ project_group.project.end_date|date:"Y-m-d" }}</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Forms and Scores Section -->
+        <!-- Example section for one type of score, replicate as needed for others -->
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <!-- Forms for entering scores -->
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- Presentation Form Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">Mid-Project Presentation Scores</div>
+                        <div class="card-body">
+                            {% for field in presentation_form %}
+                                {% if field.name != 'comment' %}
+                                    <div class="form-group">
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {{ field.errors }}
+                                        {{ field }}
+                                        {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- QA Formset Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">Q&A Scores</div>
+                        <div class="card-body">
+                            {{ qa_formset.management_form }}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Q&A Score (Max 20)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for form in qa_formset %}
+                                        <tr>
+                                            <td>{{ form.student }}</td>
+                                            {{ form.id }}
+                                            <td>
+                                                {{ form.qa_score }}
+                                                {% if form.qa_score.errors %}<div class="alert alert-danger">{{ form.qa_score.errors }}</div>{% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Comments Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-secondary text-white">Comments</div>
+                        <div class="card-body">
+                            <textarea name="comment"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Enter comments here...">{{ presentation_form.comment.value }}</textarea>
+                        </div>
+                    </div>
+                    <!-- Submission Button -->
+                    <div class="text-center mb-4">
+                        <button type="submit" class="btn btn-primary">Submit Scores</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

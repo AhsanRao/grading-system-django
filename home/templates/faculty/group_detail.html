@@ -1,0 +1,35 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}Group Details{% endblock %}
+{% block body %}class="bg-gray-100"{% endblock %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock %}
+{% block content %}
+    <div class="container mt-8">
+        <h2>Details for Group: {{ group.name }}</h2>
+        <div class="mb-3">
+            <strong>Project:</strong> {{ group.project.name }}
+        </div>
+        <div class="mb-3">
+            <strong>Members:</strong>
+            <ul>
+                {% for student in group.students.all %}
+                    <li>{{ student.get_username }}</li>
+                {% empty %}
+                    <li>No students assigned.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="mb-3">
+            <strong>Faculty Assignments:</strong>
+            <ul>
+                {% for assignment in assignments %}
+                    <li>{{ assignment.faculty.get_username }} - {{ assignment.get_role_display }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{% url 'faculty-project-groups' group.project.id %}"
+           class="btn btn-secondary mt-2">Back to Project Groups</a>
+    </div>
+{% endblock %}

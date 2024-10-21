@@ -1,0 +1,274 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+    Assessment Scores
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <header class="header-2">
+        <div class="page-header min-vh-65 relative"
+             style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 text-center mx-auto">
+                        <h1 class="text-white pt-3 mt-n5">Assessment Scores</h1>
+                        <!-- Display Project and Group Information -->
+                        <div class="text-white mt-5">
+                            <p class="mb-0">
+                                Project: <span class="text-primary">{{ project_group.project.name }}</span>
+                            </p>
+                            <p class="mb-0">
+                                Group: <span class="text-secondary">{{ project_group.name }}</span>
+                            </p>
+                            <p class="mb-0">
+                                Project Coordinator: <span class="text-secondary">{{ project_group.project.coordinator }}</span>
+                            </p>
+                            <p class="mb-0">
+                                Start Date: <span class="text-secondary">{{ project_group.project.start_date }}</span>
+                            </p>
+                            <p class="mb-0">
+                                End Date: <span class="text-secondary">{{ project_group.project.end_date }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="position-absolute w-100 z-index-1 bottom-0">
+                <svg class="waves"
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     viewBox="0 24 150 40"
+                     preserveAspectRatio="none"
+                     shape-rendering="auto">
+                    <defs>
+                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                    </defs>
+                    <g class="moving-waves">
+                    <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+                    <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+                    <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+                    <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </header>
+    <!-- Go Back Button -->
+    <div class="text-center mt-4">
+        <button type="button"
+                class="btn btn-secondary"
+                onclick="window.history.back();">Go Back</button>
+    </div>
+    <div class="container">
+        <h1 class="mb-4 text-center">Assessment Scores</h1>
+        <form id="assessmentForm" method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden"
+                   name="proposal-project_group"
+                   value="{{ project_group.id }}">
+            <!-- Inside project_reports_form.html -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-dark text-white">INTERVIEW (to identify individual contribution), 10%</div>
+                <div class="card-body">
+                    {{ interview_formset.management_form }}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Score (Max 100)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for form in interview_formset %}
+                                {{ form.id }}
+                                <tr {% if form.non_field_errors %}class="table-danger"{% endif %}>
+                                    <td>
+                                        {{ form.student }}
+                                        {% for error in form.student.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </td>
+                                    <td>
+                                        {{ form.score }}
+                                        {% for error in form.score.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </td>
+                                </tr>
+                                {% if form.non_field_errors %}
+                                    <tr>
+                                        <td colspan="2">
+                                            {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Logbook Entries Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-info text-white">LOGBOOKS (to be prepared individually), 10%</div>
+                <div class="card-body">
+                    {{ logbook_formset.management_form }}
+                    {% for form in logbook_formset %}
+                        <!-- Render the hidden ID field -->
+                        {{ form.id }}
+                        <!-- Render the rest of the form -->
+                        {{ form.as_p }}
+                        <div>
+                            <div>
+                                <strong>Total Score:</strong>
+                                {% if form.instance.id in logbook_totals %}
+                                    {{ logbook_totals|get_item:form.instance.id|default:"Not calculated" }}
+                                {% else %}
+                                    Not calculated
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Proposal Form Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-secondary text-white">PROJECT PROPOSAL (10%)</div>
+                <div class="card-body">
+                    {% for field in proposal_form %}
+                        <div class="form-group mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field.errors }}
+                            <input type="{{ field.field.widget.input_type }}"
+                                   name="{{ field.html_name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control"
+                                   value="{{ field.value|default_if_none:'' }}"
+                                   {% if field.field.required %}required{% endif %}>
+                            {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <strong>Proposal Subtotal: {{ proposal_subtotal }}</strong>
+                </div>
+            </div>
+            <!-- Progress Report Form Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-warning text-white">PROGRESS REPORT (20%)</div>
+                <div class="card-body">
+                    {% for field in progress_report_form %}
+                        <div class="form-group mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field.errors }}
+                            <input type="{{ field.field.widget.input_type }}"
+                                   name="{{ field.html_name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control"
+                                   value="{{ field.value|default_if_none:'' }}"
+                                   {% if field.field.required %}required{% endif %}>
+                            {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <strong>Progress Report Subtotal: {{ progress_report_subtotal }}</strong>
+                </div>
+            </div>
+            <!-- Mid-Project Report Form Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-info text-white">MID-PROJECT REPORT (30%)</div>
+                <div class="card-body">
+                    {% for field in mid_project_report_form %}
+                        <div class="form-group mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field.errors }}
+                            <input type="{{ field.field.widget.input_type }}"
+                                   name="{{ field.html_name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control"
+                                   value="{{ field.value|default_if_none:'' }}"
+                                   {% if field.field.required %}required{% endif %}>
+                            {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <strong>Mid-Project Report Subtotal: {{ mid_project_report_subtotal }}</strong>
+                </div>
+            </div>
+            <!-- Mid-Project Presentation Form Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-primary text-white">MID-PROJECT PRESENTATION (30%)</div>
+                <div class="card-body">
+                    {% for field in mid_project_presentation_form %}
+                        {% if field.name != 'comment' %}
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field.errors }}
+                                <input type="{{ field.field.widget.input_type }}"
+                                       name="{{ field.html_name }}"
+                                       id="{{ field.id_for_label }}"
+                                       class="form-control"
+                                       value="{{ field.value|default_if_none:'' }}"
+                                       {% if field.field.required %}required{% endif %}>
+                                {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <strong>Mid-Project Presentation Subtotal: {{ mid_project_presentation_subtotal }}</strong>
+                </div>
+            </div>
+            <!-- Comment Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-gradient-secondary text-white">Additional Comments</div>
+                <div class="card-body">
+                    <textarea class="form-control"
+                              name="midpres-comment"
+                              rows="3"
+                              placeholder="Enter any additional comments here...">{{ mid_project_presentation_form.comment.value }}</textarea>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn bg-gradient-primary btn-lg">Submit Scores</button>
+            </div>
+            <div class="container mt-5">
+                <h2 class="mb-4 text-center">Total Scores per Student</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Student Username</th>
+                            <th>Total Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for username, total in student_totals.items %}
+                            <tr>
+                                <td>{{ username }}</td>
+                                <td>{{ total }}%</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <script>// JavaScript</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}
+    Projects
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <!-- Adds margin on top -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Projects</h2>
+            <a href="{% url 'coordinator-project-create' %}" class="btn btn-primary">Create New Project</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Project Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.description }}</td>
+                        <td>{{ project.start_date }}</td>
+                        <td>{{ project.end_date }}</td>
+                        <td>
+                            <a href="{% url 'coordinator-project-detail' project.pk %}"
+                               class="btn btn-info btn-sm">View Details</a>
+                            <a href="{% url 'project-group-create' project.pk %}"
+                               class="btn btn-success btn-sm">Add Group</a>
+                            <a href="{% url 'group-list' project.pk %}"
+                               class="btn btn-warning btn-sm">View Groups</a>
+                            <form action="{% url 'project-delete' project.pk %}"
+                                  method="post"
+                                  style="display: inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Delete Project</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No projects available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+    Project Groups
+{% endblock title %}
+{% block body %}
+    class="bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <h2>Groups in Project: {{ project.name }}</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Group Name</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ group.name }}</td>
+                        <td>
+                            <a href="{% url 'group-details' group.pk %}" class="btn btn-info btn-sm">View Details</a>
+                            {% if user|is_supervisor_for:group.pk %}
+                                <a href="{% url 'supervisor-reports' group.pk %}"
+                                   class="btn btn-warning btn-sm">Fill Supervisor Report (70%)</a>
+                            {% endif %}
+                            {% if user|is_examiner_for:group.pk %}
+                                <a href="{% url 'examiner-reports' group.pk %}"
+                                   class="btn btn-success btn-sm">Fill Examiner Report (15%)</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">No groups assigned to this project.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'faculty-project-list' %}"
+           class="btn btn-secondary mt-2">Back to Projects</a>
+    </div>
+{% endblock %}

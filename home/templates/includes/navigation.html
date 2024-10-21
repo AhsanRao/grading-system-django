@@ -1,0 +1,207 @@
+{% load static %}
+<!-- Navbar -->
+<div class="container position-sticky z-index-sticky top-0">
+    <div class="row">
+        <div class="col-12">
+            <nav class="navbar navbar-expand-lg  blur blur-rounded top-0 z-index-fixed shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+                <div class="container-fluid px-0">
+                    <a class="navbar-brand font-weight-bolder ms-sm-3"
+                       href="/"
+                       rel="tooltip"
+                       title="Grading System -Ash"
+                       data-placement="bottom">Grading System</a>
+                    <button class="navbar-toggler shadow-none ms-2"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navigation"
+                            aria-controls="navigation"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon mt-2">
+                            <span class="navbar-toggler-bar bar1"></span>
+                            <span class="navbar-toggler-bar bar2"></span>
+                            <span class="navbar-toggler-bar bar3"></span>
+                        </span>
+                    </button>
+                    <div class="collapse navbar-collapse pt-3 pb-2 py-lg-0 w-100"
+                         id="navigation">
+                        <ul class="navbar-nav navbar-nav-hover ms-lg-12 ps-lg-5 w-100">
+                            <!-- Student Dropdown -->
+                            {% if request.user.is_authenticated and request.user.is_student %}
+                                <li class="nav-item dropdown dropdown-hover mx-2">
+                                    <a class="nav-link ps-2 d-flex justify-content-between cursor-pointer align-items-center"
+                                       href="javascript:;"
+                                       id="studentDropdown"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        Dashboard
+                                        <img src="{% static 'img/down-arrow-dark.svg' %}"
+                                             alt="down-arrow"
+                                             class="arrow ms-1"
+                                             height="10"
+                                             width="10">
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
+                                         aria-labelledby="studentDropdown">
+                                        <a href="{% url 'student-project-list' %}"
+                                           class="dropdown-item border-radius-md">
+                                            <span class="ps-3">My Projects</span>
+                                        </a>
+                                        <a href="{% url 'student-project-list' %}"
+                                           class="dropdown-item border-radius-md">
+                                            <span class="ps-3">Group Details</span>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <!-- Examiner Dropdown -->
+                            {% if request.user.is_authenticated and request.user.is_faculty %}
+                                <li class="nav-item dropdown dropdown-hover mx-2">
+                                    <a class="nav-link ps-2 d-flex justify-content-between cursor-pointer align-items-center"
+                                       href="javascript:;"
+                                       id="examinerDropdown"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        Dashboard
+                                        <img src="{% static 'img/down-arrow-dark.svg' %}"
+                                             alt="down-arrow"
+                                             class="arrow ms-1"
+                                             height="10"
+                                             width="10">
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
+                                         aria-labelledby="examinerDropdown">
+                                        <a href="{% url 'faculty-project-list' %}"
+                                           class="dropdown-item border-radius-md">
+                                            <span class="ps-3">View Assigned Projects</span>
+                                        </a>
+                                        <a href="{% url 'faculty-project-list' %}"
+                                           class="dropdown-item border-radius-md">
+                                            <span class="ps-3">View Assigned Groups</span>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <!-- Supervisor Dropdown -->
+                            {% if request.user.is_authenticated and request.user.is_coordinator %}
+                                <li class="nav-item dropdown dropdown-hover mx-2">
+                                    <a class="nav-link ps-2 d-flex justify-content-between cursor-pointer align-items-center"
+                                       href="javascript:;"
+                                       id="supervisorDropdown"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        Dashboard
+                                        <img src="{% static 'img/down-arrow-dark.svg' %}"
+                                             alt="down-arrow"
+                                             class="arrow ms-1"
+                                             height="10"
+                                             width="10">
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
+                                         aria-labelledby="supervisorDropdown">
+                                        <a href="{% url 'coordinator-project-list' %}"
+                                           class="dropdown-item border-radius-md">
+                                            <span class="ps-3">View Projects</span>
+                                        </a>
+                                        <a href="{% url 'coordinator-project-create' %}"
+                                           class="dropdown-item border-radius-md">
+                                            <span class="ps-3">Add Project</span>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item dropdown dropdown-hover mx-2">
+                                <a class="nav-link ps-2 d-flex justify-content-between cursor-pointer align-items-center"
+                                   href="javascript:;"
+                                   id="dropdownMenuPages"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    Profile
+                                    <img src="{% static 'img/down-arrow-dark.svg' %}"
+                                         alt="down-arrow"
+                                         class="arrow ms-1"
+                                         height="10"
+                                         width="10">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
+                                     aria-labelledby="dropdownMenuPages">
+                                    <div class="d-none d-lg-block">
+                                        <div class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center px-0 mt-3">
+                                            <div class="d-inline-block">
+                                                <div class="icon icon-shape icon-xs border-radius-md bg-gradient-primary text-center me-2 d-flex align-items-center justify-content-center ps-0">
+                                                    <svg width="12px"
+                                                         height="12px"
+                                                         viewBox="0 0 42 42"
+                                                         version="1.1"
+                                                         xmlns="http://www.w3.org/2000/svg"
+                                                         xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                        <title>office</title>
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                                                        <g transform="translate(1716.000000, 291.000000)">
+                                                        <g transform="translate(153.000000, 2.000000)">
+                                                        <path d="M12.25,17.5 L8.75,17.5 L8.75,1.75 C8.75,0.78225 9.53225,0 10.5,0 L31.5,0 C32.46775,0 33.25,0.78225 33.25,1.75 L33.25,12.25 L29.75,12.25 L29.75,3.5 L12.25,3.5 L12.25,17.5 Z" opacity="0.6">
+                                                        </path>
+                                                        <path d="M40.25,14 L24.5,14 C23.53225,14 22.75,14.78225 22.75,15.75 L22.75,38.5 L19.25,38.5 L19.25,22.75 C19.25,21.78225 18.46775,21 17.5,21 L1.75,21 C0.78225,21 0,21.78225 0,22.75 L0,40.25 C0,41.21775 0.78225,42 1.75,42 L40.25,42 C41.21775,42 42,41.21775 42,40.25 L42,15.75 C42,14.78225 41.21775,14 40.25,14 Z M12.25,36.75 L7,36.75 L7,33.25 L12.25,33.25 L12.25,36.75 Z M12.25,29.75 L7,29.75 L7,26.25 L12.25,26.25 L12.25,29.75 Z M35,36.75 L29.75,36.75 L29.75,33.25 L35,33.25 L35,36.75 Z M35,29.75 L29.75,29.75 L29.75,26.25 L35,26.25 L35,29.75 Z M35,22.75 L29.75,22.75 L29.75,19.25 L35,19.25 L35,22.75 Z">
+                                                        </path>
+                                                        </g>
+                                                        </g>
+                                                        </g>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            Account
+                                        </div>
+                                        {% if request.user.is_authenticated %}
+                                            <a href="{% url 'update_profile' %}"
+                                               class="dropdown-item border-radius-md">
+                                                <span class="ps-3">Update Profile</span>
+                                            </a>
+                                            <a href="{% url 'password_change' %}"
+                                               class="dropdown-item border-radius-md">
+                                                <span class="ps-3">Change Password</span>
+                                            </a>
+                                            <a href="{% url 'logout' %}" class="dropdown-item border-radius-md">
+                                                <span class="ps-3">Logout</span>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'login' %}" class="dropdown-item border-radius-md">
+                                                <span class="ps-3">Sign In</span>
+                                            </a>
+                                            <a href="{% url 'register' %}" class="dropdown-item border-radius-md">
+                                                <span class="ps-3">Sign Up</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            {% if request.user.is_authenticated %}
+                                <li class="nav-item ms-lg-auto">
+                                    <a class="nav-link nav-link-icon me-2" href="{% url 'logout' %}">
+                                        <i class="fa fa-sign-out me-1"></i>
+                                        <p class="d-inline text-sm z-index-1 font-weight-bold"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="bottom"
+                                           title="Logout">Logout</p>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item ms-lg-auto">
+                                    <a class="nav-link nav-link-icon me-2" href="{% url 'login' %}">
+                                        <i class="fa fa-sign-in me-1"></i>
+                                        <p class="d-inline text-sm z-index-1 font-weight-bold"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="bottom"
+                                           title="Login">Login</p>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+        </div>
+    </div>
+</div>

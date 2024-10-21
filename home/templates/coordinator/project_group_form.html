@@ -1,0 +1,41 @@
+<!-- supervisor/project_group_form.html -->
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}
+    Add Group
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <h2>
+            {% if not object %}
+                Create New
+            {% else %}
+                Update
+            {% endif %}
+            Project Group
+        </h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Group Name:</label>
+                {{ form.name }}
+            </div>
+            <div class="mb-3">
+                <label>{{ form.students.label }}</label>
+                {% for student in form.students %}
+                    <div class="form-check">
+                        {{ student.tag }}
+                        <label class="form-check-label" for="{{ student.id_for_label }}">{{ student.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+{% endblock %}

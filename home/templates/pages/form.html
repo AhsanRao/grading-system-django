@@ -1,0 +1,45 @@
+<!-- reports/form.html -->
+<!-- proposal_form.html -->
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}
+    Marks
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-5">
+        <h1>Manage Reports for {{ project_group.name }}</h1>
+        <div>
+            <h2>Add Progress Report</h2>
+            <form method="post"
+                  action="{% url 'add-progress-report' project_group.pk %}">
+                {% csrf_token %}
+                {{ progress_report_form.as_p }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div>
+            <h2>Add Mid Project Report</h2>
+            <form method="post"
+                  action="{% url 'add-mid-project-report' project_group.pk %}">
+                {% csrf_token %}
+                {{ mid_project_report_form.as_p }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div>
+            <h2>Add Mid Project Presentation</h2>
+            <form method="post"
+                  action="{% url 'add-mid-project-presentation' project_group.pk %}">
+                {% csrf_token %}
+                {{ mid_project_presentation_form.as_p }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

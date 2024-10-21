@@ -1,0 +1,82 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+    My Group Details
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <h2 class="mb-4 text-center">Group Details</h2>
+        <div class="card">
+            <div class="card-header bg-gradient-dark text-white">Group Information</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ group.name }}</h5>
+                <p class="card-text">
+                    <strong>Project:</strong> {{ group.project.name }}
+                </p>
+                <p class="card-text">
+                    <strong>Description:</strong> {{ group.project.description }}
+                </p>
+                <p class="card-text">
+                    <strong>Start Date:</strong> {{ group.project.start_date }}
+                </p>
+                <p class="card-text">
+                    <strong>End Date:</strong> {{ group.project.end_date }}
+                </p>
+                <p>
+                    <strong>Coordinator:</strong> {{ group.project.coordinator.get_username }}
+                </p>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Student</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in group.students.all %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex px-2 py-1">
+                                        <div>
+                                            <img src="{{ student.profile_picture.url|default:'https://demos.creative-tim.com/soft-ui-design-system-pro/assets/img/team-2.jpg' }}"
+                                                 class="avatar avatar-sm me-3">
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-xs">{{ student.username }}</h6>
+                                            <p class="text-xs text-secondary mb-0">{{ student.email }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="text-xs font-weight-bold mb-0">{{ student.email }}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ final_grades|default:"Not calculated"|get_item:student.username }}</span>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No students found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'student-project-list' %}" class="btn btn-secondary">Back to My Projects</a>
+        </div>
+    </div>
+{% endblock %}

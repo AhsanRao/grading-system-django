@@ -1,0 +1,74 @@
+<!-- supervisor/group_list.html -->
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}
+    Group List
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Groups in {{ project.name }}</h2>
+            <a href="{% url 'project-group-create' project.pk %}"
+               class="btn btn-success">Add New Group</a>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Group Name</th>
+                    <th>Total Scores</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group, student_totals in groups_with_totals %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ group }}</td>
+                        <td>
+                            {% for username, total in student_totals.items %}
+                                {{ username }}: {{ total|floatformat:2 }}%
+                                <br>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{% url 'export-supervisor-assessment' group.pk %}"
+                               class="btn bg-gradient-warning btn-sm">Export Supervisor Assessment</a>
+                            <a href="{% url 'export-examiner-assessment' group.pk %}"
+                               class="btn bg-gradient-info btn-sm">Export Examiner Assessment</a>
+                            <a href="{% url 'assign-faculty' project_group_id=group.pk %}"
+                               class="btn btn-info btn-sm">Assign Faculty</a>
+                            <a href="{% url 'project-group-update' group.pk %}"
+                               class="btn btn-primary btn-sm">Edit</a>
+                            <!-- Delete action using a form to ensure it's a POST request -->
+                            <form action="{% url 'project-group-delete' group.pk %}"
+                                  method="post"
+                                  style="display: inline-block">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this group?');">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">No groups found for this project.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'project-group-create' project.pk %}"
+           class="btn btn-success mt-2">Add New Group</a>
+        <a href="{% url 'coordinator-project-list' %}"
+           class="btn btn-secondary mt-2">Back to Projects</a>
+    </div>
+{% endblock %}

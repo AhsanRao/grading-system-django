@@ -1,0 +1,71 @@
+<!-- supervisor/project_detail.html -->
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+{% block title %}
+    Project Details
+{% endblock title %}
+{% block body %}
+    class="blog-author bg-gray-100"
+{% endblock body %}
+{% block header %}
+    {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="container mt-8">
+        <h2>Project Details</h2>
+        <div class="mb-3">
+            <strong>Name:</strong> {{ project.name }}
+        </div>
+        <div class="mb-3">
+            <strong>Description:</strong> {{ project.description }}
+        </div>
+        <div class="mb-3">
+            <strong>Start Date:</strong> {{ project.start_date|date:"Y-m-d" }}
+        </div>
+        <div class="mb-3">
+            <strong>End Date:</strong> {{ project.end_date|date:"Y-m-d" }}
+        </div>
+        <div class="mb-3">
+            <strong>Coordinator:</strong> {{ project.coordinator.username }}
+        </div>
+        <div class="mb-3">
+            <strong>Groups:</strong>
+            {% if project.project_groups.exists %}
+                <ul>
+                    {% for group_data in project_groups %}
+                        <li>
+                            {{ group_data.group }}
+                            <br>
+                            <strong>Supervisor:</strong> {{ group_data.supervisor.faculty.get_username|default:"Not assigned" }}
+                            <br>
+                            <strong>Examiners:</strong>
+                            {% for examiner in group_data.examiners %}
+                                {{ examiner.faculty.get_username }}
+                                {% if not forloop.last %},{% endif %}
+                            {% empty %}
+                                Not assigned
+                            {% endfor %}
+                            <br>
+                            <a href="{% url 'project-group-update' group_data.group.pk %}"
+                               class="ml-2">Edit Group</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No groups assigned to this project yet.</p>
+            {% endif %}
+            <a href="{% url 'project-group-create' project.pk %}"
+               class="btn btn-primary mt-2">Add Group</a>
+        </div>
+        <div class="mb-3">
+            <form action="{% url 'project-delete' project.pk %}"
+                  method="post"
+                  style="display: inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm mt-2">Delete Project</button>
+            </form>
+            <a href="{% url 'coordinator-project-list' %}"
+               class="btn btn-secondary btn-sm mt-2">Back to Projects List</a>
+        </div>
+    </div>
+{% endblock %}
