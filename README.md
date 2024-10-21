@@ -1,8 +1,8 @@
-# SDP Grading System
+# Grading System Django
 
 ## Overview
 
-The SDP Grading System is a web-based application designed to streamline the grading process for Senior Design Projects at Khalifa University's Electrical & Computer Engineering Department. This system aims to improve efficiency, accuracy, and security in managing student grades and feedback.
+The Grading System is a web-based application designed to streamline the grading process for Senior Design Projects for the Computer Engineering Departments. This system aims to improve efficiency, accuracy, and security in managing student grades and feedback.
 
 ## Features
 
@@ -93,12 +93,3 @@ We welcome contributions to the SDP Grading System. Please follow these steps to
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Contact
-
-For any queries or support, please contact the project team at [email@example.com](mailto:email@example.com).
-
-## Acknowledgments
-
-- Khalifa University, Electrical & Computer Engineering Department
-- All contributors and testers who helped shape this project
